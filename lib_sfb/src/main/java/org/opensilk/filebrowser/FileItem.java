@@ -1,5 +1,6 @@
 package org.opensilk.filebrowser;
 
+import android.content.Context;
 import android.os.Environment;
 import android.provider.MediaStore.Files.FileColumns;
 import android.text.TextUtils;
@@ -189,7 +190,7 @@ public class FileItem {
      * @param rootDir current directory path
      * @return null if rootDir is /sdcard
      */
-    public static FileItem upDir(String rootDir) {
+    public static FileItem upDir(String rootDir, long parentId) {
         if (Environment.getExternalStorageDirectory().getAbsolutePath().equals(rootDir)) {
             return null;// /sdcard is as far up as we can go
         }
@@ -197,6 +198,24 @@ public class FileItem {
         String parent = f.getParent();
         return new FileItem().setTitle("..")
                 .setMediaType(MediaType.UP_DIRECTORY)
+                .setId(parentId)
+                .setPath(parent);
+    }
+
+    public static FileItem upDir(Context context, String directory) {
+        if (Environment.getExternalStorageDirectory().getAbsolutePath().equals(directory)) {
+            return null;// /sdcard is as far up as we can go
+        }
+        File f = new File(directory);
+        String parent = f.getParent();
+        long id = MediaProviderUtil.getDirectoryId(context, parent);
+        if (id < 0) {
+            return null;
+        }
+        return new FileItem()
+                .setTitle("..")
+                .setMediaType(MediaType.UP_DIRECTORY)
+                .setId(id)
                 .setPath(parent);
     }
 }

@@ -5,7 +5,9 @@ import android.database.Cursor;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import hugo.weaving.DebugLog;
 
@@ -56,7 +58,7 @@ public class MediaProviderUtil {
                 .setPath(path);
     }
 
-    public static long getParentId(Context context, String directory) {
+    public static long getDirectoryId(Context context, String directory) {
         if (Environment.getExternalStorageDirectory().getAbsolutePath().equals(directory)) {
             return 0;
         }
@@ -70,13 +72,73 @@ public class MediaProviderUtil {
                                 directory,
                         },
                         null);
-        long parentId = -1;
+        long id = -1;
         if (c != null) {
             if (c.moveToFirst()) {
-                parentId = c.getLong(0);
+                id = c.getLong(0);
             }
             c.close();
         }
-        return parentId;
+        return id;
+    }
+
+    public static String getPath(Context context, long id) {
+        if (id == 0) {
+            return Environment.getExternalStorageDirectory().getAbsolutePath();
+        }
+        Cursor c = context.getContentResolver()
+                .query(MediaStore.Files.getContentUri("external"),
+                        new String[] {
+                                MediaStore.Files.FileColumns.DATA,
+                        },
+                        MediaStore.Files.FileColumns._ID + "=?",
+                        new String[] {
+                                String.valueOf(id),
+                        },
+                        null);
+        String path = null;
+        if (c != null) {
+            if (c.moveToFirst()) {
+                path = c.getString(0);
+            }
+            c.close();
+        }
+        return path;
+    }
+
+    public static List<FileItem> ls(Context context, String directory) {
+        long id = getDirectoryId(context, directory);
+        if (id < 0) {
+            return null;
+        }
+        Cursor c = context.getContentResolver()
+                .query(MediaStore.Files.getContentUri("external"),
+                        MediaProviderUtil.FILES_PROJECTION,
+//                        FileColumns.DATA + " like '" + directory + "%'",// and not like '" + directory+"%/%'",
+//                        null,
+                        MediaStore.Files.FileColumns.PARENT + "=?",
+                        new String[] {
+                                String.valueOf(id),
+                        },
+                        MediaStore.Files.FileColumns.DATA
+                );
+        if (c != null) {
+            List<FileItem> items = new ArrayList<>();
+            FileItem up = FileItem.upDir(context, directory);
+            if (up != null) {
+                items.add(up);
+            }
+            if (c.moveToFirst()) {
+                do {
+                    FileItem i = MediaProviderUtil.fileItemFromCursor(c);
+                    if (i != null) {
+                        items.add(i);
+                    }
+                } while (c.moveToNext());
+            }
+            c.close();
+            return items;
+        }
+        return null;
     }
 }

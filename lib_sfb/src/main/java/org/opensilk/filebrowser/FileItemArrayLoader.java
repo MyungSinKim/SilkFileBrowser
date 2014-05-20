@@ -22,39 +22,7 @@ public class FileItemArrayLoader extends WrappedAsyncTaskLoader<List<FileItem>> 
 
     @Override
     public List<FileItem> loadInBackground() {
-        long parentId = MediaProviderUtil.getParentId(getContext(), directory);
-        if (parentId < 0) {
-            return null;
-        }
-        Cursor c = getContext().getContentResolver()
-                .query(MediaStore.Files.getContentUri("external"),
-                        MediaProviderUtil.FILES_PROJECTION,
-//                        FileColumns.DATA + " like '" + directory + "%'",// and not like '" + directory+"%/%'",
-//                        null,
-                        FileColumns.PARENT + "=?",
-                        new String[] {
-                                String.valueOf(parentId),
-                        },
-                        FileColumns.DATA
-                );
-        if (c != null) {
-            List<FileItem> items = new ArrayList<>();
-            if (c.moveToFirst()) {
-                FileItem up = FileItem.upDir(directory);
-                if (up != null) {
-                    items.add(up);
-                }
-                do {
-                    FileItem i = MediaProviderUtil.fileItemFromCursor(c);
-                    if (i != null) {
-                        items.add(i);
-                    }
-                } while (c.moveToNext());
-            }
-            c.close();
-            return items;
-        }
-        return null;
+        return MediaProviderUtil.ls(getContext(), directory);
     }
 
 }
