@@ -151,7 +151,7 @@ public class FileItem {
         if (TextUtils.isEmpty(mimeType)) {
             File f = new File(path);
             if (!f.isDirectory()) {
-                String mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(getFileExtension(f));
+                String mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(FBUtil.getFileExtension(f));
                 if (mime == null) {
                     mime = "application/octet-stream";
                 }
@@ -162,28 +162,7 @@ public class FileItem {
         return mimeType;
     }
 
-    /**
-     * Gets extension from file
-     * @param f
-     * @return
-     */
-    public static String getFileExtension(File f) {
-        String name = f.getName();
-        String ext;
-        int lastDot = name.lastIndexOf('.');
-        int secondLastDot = name.lastIndexOf('.', lastDot-1);
-        if (secondLastDot > 0 ) { // Double extension
-            ext = name.substring(secondLastDot + 1);
-            if (!ext.startsWith("tar")) {
-                ext = name.substring(lastDot + 1);
-            }
-        } else if (lastDot > 0) { // Single extension
-            ext = name.substring(lastDot + 1);
-        } else { // No extension
-            ext = "";
-        }
-        return ext;
-    }
+
 
     /**
      * Creates the special updir item
