@@ -23,13 +23,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <org.opensilk.filebrowser.FileIcon
+    <FrameLayout
         android:layout_gravity="left|center_vertical"
-        android:gravity="center"
-        android:textAppearance="?android:textAppearanceLargeInverse"
-        android:id="@+id/fb__item_icon"
         android:layout_width="@dimen/card_base_empty_height"
-        android:layout_height="@dimen/card_base_empty_height" />
+        android:layout_height="@dimen/card_base_empty_height">
+
+        <org.opensilk.filebrowser.FBItemIcon
+            android:gravity="center"
+            android:textAppearance="?android:textAppearanceLargeInverse"
+            android:id="@+id/fb__item_icon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ImageView
+            android:id="@+id/fb__item_checked"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/holo_blue_bright"
+            android:scaleType="centerInside"
+            android:visibility="gone"
+            android:src="@drawable/ic_action_tick_white"/>
+
+    </FrameLayout>
 
     <LinearLayout
         android:orientation="vertical"
@@ -44,6 +59,8 @@
             android:id="@+id/fb__item_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:ellipsize="end"
             android:textAppearance="@style/FBCardTitleTextAppearance"/>
 
         <LinearLayout

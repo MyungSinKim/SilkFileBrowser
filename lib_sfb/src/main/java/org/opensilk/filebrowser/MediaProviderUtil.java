@@ -44,7 +44,7 @@ public class MediaProviderUtil {
     }
 
     @DebugLog
-    public static FileItem fileItemFromCursor(Cursor c) {
+    public static FBItem fileItemFromCursor(Cursor c) {
         final String displayName = c.getString(c.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DISPLAY_NAME));
         final String title = c.getString(c.getColumnIndexOrThrow(MediaStore.Files.FileColumns.TITLE));
         final String mime = c.getString(c.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MIME_TYPE));
@@ -64,14 +64,20 @@ public class MediaProviderUtil {
         if (TextUtils.isEmpty(name)) {
             return null; // Its a ghost
         }
-        return new FileItem()
-                .setTitle(FileItem.resolveTitle(name, mediaType, path))
-                .setMimeType(FileItem.resolveMime(mime, path))
+
+        final int realMediaType = FBItemUtil.resolveType(mediaType, path);
+        final String realTitle = FBItemUtil.resolveTitle(name, realMediaType, path);
+        final String realMime = FBItemUtil.resolveMime(mime, path);
+        final long realSize = FBItemUtil.resolveSize(size, mediaType, path);
+
+        return new FBItem()
+                .setTitle(realTitle)
+                .setMimeType(realMime)
                 .setParent(parent)
                 .setId(id)
-                .setMediaType(FileItem.resolveType(mediaType, path))
+                .setMediaType(realMediaType)
                 .setPath(path)
-                .setSize(size)
+                .setSize(realSize)
                 .setDate(date);
     }
 
@@ -123,7 +129,7 @@ public class MediaProviderUtil {
         return path;
     }
 
-    public static List<FileItem> ls(Context context, String directory) {
+    public static List<FBItem> ls(Context context, String directory) {
         long id = getDirectoryId(context, directory);
         if (id < 0) {
             return null;
@@ -140,14 +146,14 @@ public class MediaProviderUtil {
                         MediaStore.Files.FileColumns.DATA
                 );
         if (c != null) {
-            List<FileItem> items = new ArrayList<>();
-            FileItem up = FileItem.upDir(context, directory);
+            List<FBItem> items = new ArrayList<>();
+            FBItem up = FBItemUtil.upDir(context, directory);
             if (up != null) {
                 items.add(up);
             }
             if (c.moveToFirst()) {
                 do {
-                    FileItem i = MediaProviderUtil.fileItemFromCursor(c);
+                    FBItem i = MediaProviderUtil.fileItemFromCursor(c);
                     if (i != null) {
                         items.add(i);
                     }

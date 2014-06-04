@@ -7,49 +7,49 @@ import android.widget.TextView;
 /**
  * Created by drew on 4/30/14.
  */
-public class FileIcon extends TextView {
+public class FBItemIcon extends TextView {
 
-    public FileIcon(Context context) {
+    public FBItemIcon(Context context) {
         super(context);
     }
 
-    public FileIcon(Context context, AttributeSet attrs) {
+    public FBItemIcon(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public FileIcon(Context context, AttributeSet attrs, int defStyle) {
+    public FBItemIcon(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
     /**
      * Initializes the view
-     * @param mediaType {@link org.opensilk.filebrowser.FileItem.MediaType}
+     * @param mediaType {@link FBItem.MediaType}
      * @param mimeType fallback file type, used for NONE type
      */
     public void forType(int mediaType, String mimeType) {
 
         switch (mediaType) {
-            case FileItem.MediaType.AUDIO:
+            case FBItem.MediaType.AUDIO:
                 setText("\u266A");
                 setBackgroundColor(getResources().getColor(android.R.color.holo_orange_dark));
                 break;
-            case FileItem.MediaType.IMAGE:
+            case FBItem.MediaType.IMAGE:
                 setText("IMG");
                 setBackgroundColor(getResources().getColor(android.R.color.holo_purple));
                 break;
-            case FileItem.MediaType.VIDEO:
+            case FBItem.MediaType.VIDEO:
                 setText("VID");
                 setBackgroundColor(getResources().getColor(android.R.color.holo_green_dark));
                 break;
-            case FileItem.MediaType.DIRECTORY:
+            case FBItem.MediaType.DIRECTORY:
                 setText("DIR");
                 setBackgroundColor(getResources().getColor(android.R.color.holo_blue_dark));
                 break;
-            case FileItem.MediaType.UP_DIRECTORY:
+            case FBItem.MediaType.UP_DIRECTORY:
                 setText("UP");
                 setBackgroundColor(getResources().getColor(android.R.color.holo_blue_dark));
                 break;
-            case FileItem.MediaType.NONE:
+            case FBItem.MediaType.NONE:
                 switch (mimeType) {
                     //TODO more
                     default:

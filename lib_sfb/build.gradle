@@ -21,11 +21,10 @@ android {
     buildTypes {
         release {
             runProguard false
-            //Uncomment to show debugLogs
-//            debuggable true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+    //Uncomment to show debugLogs
 //    defaultPublishConfig 'debug'
 }
 
