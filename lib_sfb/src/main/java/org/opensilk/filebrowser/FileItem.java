@@ -46,6 +46,8 @@ public class FileItem {
     private long id;
     private int mediaType;
     private String path;
+    private long size;
+    private long date;
 
     public FileItem setTitle(String title) {
         this.title = title;
@@ -77,6 +79,16 @@ public class FileItem {
         return this;
     }
 
+    public FileItem setSize(long size) {
+        this.size = size;
+        return this;
+    }
+
+    public FileItem setDate(long date) {
+        this.date = date;
+        return this;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -102,10 +114,19 @@ public class FileItem {
         return path;
     }
 
+    public long getSize() {
+        return size;
+    }
+
+    public long getDate() {
+        return date;
+    }
+
     @Override
     public String toString() {
-        return String.format(Locale.US, "title=%s,mime=%s,parent=%d,id=%d,mediaType=%s,path=%s",
-                title, mimeType, parent, id, MediaType.toString(mediaType), path);
+//        return String.format(Locale.US, "title=%s,mime=%s,parent=%d,id=%d,mediaType=%s,path=%s",
+//                title, mimeType, parent, id, MediaType.toString(mediaType), path);
+        return title;
     }
 
     /**
@@ -114,7 +135,7 @@ public class FileItem {
      * @param title
      * @param mediaType
      * @param path
-     * @return title in mediaType != NONE else fileName from given path
+     * @return title if mediaType != NONE else fileName from given path
      */
     public static String resolveTitle(String title, int mediaType, String path) {
         if (mediaType == MediaType.NONE) {

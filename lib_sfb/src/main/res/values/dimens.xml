@@ -1,6 +1,7 @@
 <resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
 
-    </resources>
+    <!-- Override default card height (96dp) -->
+    <dimen name="card_base_empty_height">60dp</dimen>
+
+    <dimen name="fb__card_inner_horizontal_margin">8dp</dimen>
+</resources>

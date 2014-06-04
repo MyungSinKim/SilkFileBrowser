@@ -18,7 +18,12 @@
 
 package org.opensilk.filebrowser;
 
+import android.content.Context;
+
 import java.io.File;
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by drew on 5/22/14.
@@ -77,5 +82,28 @@ public class FBUtil {
             ext = "";
         }
         return ext;
+    }
+
+    public static String prettyPrintSize(long size) {
+        String suffix = "Bytes";
+        double sz = (double) size;
+        if (sz > 1024) {
+            sz /= 1024;
+            suffix = "KiB";
+        }
+        if (sz > 1024) {
+            sz /= 1024;
+            suffix = "MiB";
+        }
+        if (sz > 1024) {
+            sz /= 1024;
+            suffix = "GiB";
+        }
+        return String.format(Locale.US, "%.02f %s", sz, suffix);
+    }
+
+    public static String prettyPrintDate(Context ctx, long sec) {
+        DateFormat df = android.text.format.DateFormat.getDateFormat(ctx);
+        return df.format(new Date(sec*1000));
     }
 }

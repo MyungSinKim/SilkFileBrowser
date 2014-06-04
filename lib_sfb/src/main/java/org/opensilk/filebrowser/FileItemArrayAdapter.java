@@ -23,7 +23,7 @@ public class FileItemArrayAdapter extends ArrayAdapter<FileItem> {
         ViewHolder h;
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = inflater.inflate(R.layout.file_item, parent, false);
+            v = inflater.inflate(R.layout.fb__file_item, parent, false);
             h = new ViewHolder(v);
             v.setTag(h);
         } else {

@@ -29,7 +29,7 @@ public class BrowserFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.browser_container, container, false);
+        View v = inflater.inflate(R.layout.fb__browser_container, container, false);
         return v;
     }
 
@@ -38,7 +38,8 @@ public class BrowserFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         if (savedInstanceState == null) {
             // Load the initial file list
-            FileListFragment f = FileListFragment.newInstance(getArguments().getString("path"));
+//            FileListFragment f = FileListFragment.newInstance(getArguments().getString("path"));
+            FBCardListFragment f = FBCardListFragment.newInstance(getArguments().getString("path"));
             getChildFragmentManager().beginTransaction()
                     .replace(R.id.browser_container, f)
                     .commit();

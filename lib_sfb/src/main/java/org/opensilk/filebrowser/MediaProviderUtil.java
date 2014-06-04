@@ -2,12 +2,23 @@ package org.opensilk.filebrowser;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.media.MediaScannerConnection;
+import android.media.MediaScannerConnection.OnScanCompletedListener;
+import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import hugo.weaving.DebugLog;
 
@@ -27,6 +38,8 @@ public class MediaProviderUtil {
                 MediaStore.Files.FileColumns._ID,
                 MediaStore.Files.FileColumns.MEDIA_TYPE,
                 MediaStore.Files.FileColumns.DATA,
+                MediaStore.Files.FileColumns.SIZE,
+                MediaStore.Files.FileColumns.DATE_MODIFIED
         };
     }
 
@@ -39,9 +52,11 @@ public class MediaProviderUtil {
         final long id = c.getLong(c.getColumnIndexOrThrow(MediaStore.Files.FileColumns._ID));
         final int mediaType = c.getInt(c.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MEDIA_TYPE));
         final String path = c.getString(c.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA));
+        final long size = c.getLong(c.getColumnIndexOrThrow(MediaStore.Files.FileColumns.SIZE));
+        final long date = c.getLong(c.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATE_MODIFIED));
 
         final String name;
-        if (displayName != null) {
+        if (!TextUtils.isEmpty(displayName)) {
             name = displayName;
         } else {
             name = title;
@@ -55,7 +70,9 @@ public class MediaProviderUtil {
                 .setParent(parent)
                 .setId(id)
                 .setMediaType(FileItem.resolveType(mediaType, path))
-                .setPath(path);
+                .setPath(path)
+                .setSize(size)
+                .setDate(date);
     }
 
     public static long getDirectoryId(Context context, String directory) {
@@ -142,5 +159,100 @@ public class MediaProviderUtil {
         return null;
     }
 
+    public static MediaScannerFuture addFile(Context context, String path) {
+        MediaScannerFuture f = new MediaScannerFuture(path);
+        MediaScannerConnection.scanFile(context, new String[]{path}, null, f);
+        return f;
+    }
+
+    public static void moveFile(Context context, long id, String newDir) {
+        String path = getPath(context, id);
+        File f = new File(path);
+        if (f.isDirectory()) {
+            moveDir(context, f, newDir);
+        } else {
+            moveFile(context, f, newDir);
+        }
+        context.getContentResolver().delete(MediaStore.Files.getContentUri("external"),
+                MediaStore.Files.FileColumns._ID+"=?",
+                new String[]{String.valueOf(id)});
+    }
+
+    public static void moveFile(Context context, File oldFile, String newDir) {
+        try {
+            FileUtils.moveFileToDirectory(oldFile, new File(newDir), true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void moveDir(Context context, File oldDir, String newDir) {
+
+    }
+
+    public static class MediaScannerFuture implements Future<Uri>, OnScanCompletedListener {
+        private final String path;
+        private Uri uri;
+        private boolean complete = false;
+        public MediaScannerFuture(String path) {
+            this.path = path;
+        }
+
+        @Override
+        public boolean cancel(boolean mayInterruptIfRunning) {
+            return false; //STUB
+        }
+
+        @Override
+        public boolean isCancelled() {
+            return false; //STUB
+        }
+
+        @Override
+        public boolean isDone() {
+            return complete;
+        }
+
+        @Override
+        public Uri get() throws InterruptedException, ExecutionException {
+            try {
+                return doGet(null);
+            } catch (TimeoutException e) {
+                throw new AssertionError(e);
+            }
+        }
+
+        @Override
+        public Uri get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+            return doGet(TimeUnit.MILLISECONDS.convert(timeout, unit));
+        }
+
+        @Override
+        public synchronized void onScanCompleted(String path, Uri uri) {
+            if (this.path.equals(path)) {
+                this.uri = uri;
+                this.complete = true;
+                notifyAll();
+            }
+        }
+
+        private synchronized Uri doGet(Long timeoutMs) throws InterruptedException, TimeoutException {
+            if (complete) {
+                return this.uri;
+            }
+
+            if (timeoutMs == null) {
+                wait(0);
+            } else if (timeoutMs > 0) {
+                wait(timeoutMs);
+            }
+
+            if (!complete) {
+                throw new TimeoutException();
+            }
+
+            return this.uri;
+        }
+    }
 
 }

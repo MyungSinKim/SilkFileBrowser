@@ -15,3 +15,19 @@ allprojects {
         mavenCentral()
     }
 }
+
+// Build config
+ext.compileSdkVersion = 19
+ext.buildToolsVersion  = "19.0.3"
+
+// defaultConfig
+ext.targetSdkVersion = 19
+
+def gitSha() {
+    return 'git rev-parse --short HEAD'.execute().text.trim()
+}
+
+def getDebugVersionSuffix() {
+    // When building with Android Studio gitSha() is null;
+    return "${gitSha()}".isEmpty() ? "-SNAPSHOT" : "-SNAPSHOT-${gitSha()}"
+}
