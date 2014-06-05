@@ -8,7 +8,7 @@ import android.text.TextUtils;
 /**
  * Created by drew on 4/30/14.
  */
-public class FBItem implements Parcelable {
+public class FileItem implements Parcelable {
 
     public static class MediaType {
         public static final int NONE = FileColumns.MEDIA_TYPE_NONE;
@@ -45,46 +45,46 @@ public class FBItem implements Parcelable {
     private long size;
     private long date;
 
-    public FBItem() {
+    public FileItem() {
 
     }
 
-    public FBItem setTitle(String title) {
+    public FileItem setTitle(String title) {
         this.title = title;
         return this;
     }
 
-    public FBItem setMimeType(String mimeType) {
+    public FileItem setMimeType(String mimeType) {
         this.mimeType = mimeType;
         return this;
     }
 
-    public FBItem setParent(long parent) {
+    public FileItem setParent(long parent) {
         this.parent = parent;
         return this;
     }
 
-    public FBItem setId(long id) {
+    public FileItem setId(long id) {
         this.id = id;
         return this;
     }
 
-    public FBItem setMediaType(int mediaType) {
+    public FileItem setMediaType(int mediaType) {
         this.mediaType = mediaType;
         return this;
     }
 
-    public FBItem setPath(String path) {
+    public FileItem setPath(String path) {
         this.path = path;
         return this;
     }
 
-    public FBItem setSize(long size) {
+    public FileItem setSize(long size) {
         this.size = size;
         return this;
     }
 
-    public FBItem setDate(long date) {
+    public FileItem setDate(long date) {
         this.date = date;
         return this;
     }
@@ -133,8 +133,8 @@ public class FBItem implements Parcelable {
     public boolean equals(Object o) {
         if (o == this) return true;
         if (o == null) return false;
-        if (!(o instanceof FBItem)) return false;
-        FBItem i = (FBItem) o;
+        if (!(o instanceof FileItem)) return false;
+        FileItem i = (FileItem) o;
         if (!TextUtils.equals(i.title, this.title)) return false;
         if (!TextUtils.equals(i.mimeType, this.mimeType)) return false;
         if (i.parent != this.parent) return false;
@@ -167,7 +167,7 @@ public class FBItem implements Parcelable {
         dest.writeLong(date);
     }
 
-    private FBItem(Parcel in) {
+    private FileItem(Parcel in) {
         this.title = in.readString();
         this.mimeType = in.readString();
         this.parent = in.readLong();
@@ -178,15 +178,15 @@ public class FBItem implements Parcelable {
         this.date = in.readLong();
     }
 
-    public static final Parcelable.Creator<FBItem> CREATOR = new Creator<FBItem>() {
+    public static final Parcelable.Creator<FileItem> CREATOR = new Creator<FileItem>() {
         @Override
-        public FBItem createFromParcel(Parcel source) {
-            return new FBItem(source);
+        public FileItem createFromParcel(Parcel source) {
+            return new FileItem(source);
         }
 
         @Override
-        public FBItem[] newArray(int size) {
-            return new FBItem[size];
+        public FileItem[] newArray(int size) {
+            return new FileItem[size];
         }
     };
 

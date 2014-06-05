@@ -27,12 +27,12 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import org.opensilk.filebrowser.FBItem.MediaType;
+import org.opensilk.filebrowser.FileItem.MediaType;
 
 /**
  * Created by drew on 6/4/14.
  */
-public class FBItemUtil {
+public class FileItemUtil {
 
     /**
      * Check existence of file and increment name as needed.
@@ -209,20 +209,20 @@ public class FBItemUtil {
      * @param rootDir current directory path
      * @return null if rootDir is /sdcard
      */
-    public static FBItem upDir(String rootDir, long parentId) {
+    public static FileItem upDir(String rootDir, long parentId) {
         if (Environment.getExternalStorageDirectory().getAbsolutePath().equals(rootDir)) {
             return null;// /sdcard is as far up as we can go
         }
         File f = new File(rootDir);
         String parent = f.getParent();
-        return new FBItem().setTitle("..")
+        return new FileItem().setTitle("..")
                 .setMediaType(MediaType.UP_DIRECTORY)
                 .setId(parentId)
                 .setPath(parent)
                 .setSize(-1);
     }
 
-    public static FBItem upDir(Context context, String directory) {
+    public static FileItem upDir(Context context, String directory) {
         if (Environment.getExternalStorageDirectory().getAbsolutePath().equals(directory)) {
             return null;// /sdcard is as far up as we can go
         }
@@ -232,7 +232,7 @@ public class FBItemUtil {
         if (id < 0) {
             return null;
         }
-        return new FBItem()
+        return new FileItem()
                 .setTitle("..")
                 .setMediaType(MediaType.UP_DIRECTORY)
                 .setId(id)

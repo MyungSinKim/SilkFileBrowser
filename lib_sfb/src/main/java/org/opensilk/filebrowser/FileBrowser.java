@@ -17,11 +17,9 @@
 
 package org.opensilk.filebrowser;
 
-import android.os.Environment;
-
 /**
  * Created by drew on 6/4/14.
  */
-public interface IFBBreadcrumb {
-    public void setBreadCrumbText(String text);
+public interface FileBrowser {
+    public boolean popDirStack();
 }

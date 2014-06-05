@@ -22,6 +22,6 @@ import java.util.List;
 /**
  * Created by drew on 6/4/14.
  */
-public interface IFBSelectionListener {
-    public void onFBItemsSelected(List<FBItem> l);
+public interface FileSelectionListener {
+    public void onFileItemsSelected(List<FileItem> l);
 }

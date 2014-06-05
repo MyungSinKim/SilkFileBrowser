@@ -6,11 +6,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.widget.EditText;
 
-import org.opensilk.filebrowser.FBBrowser;
-import org.opensilk.filebrowser.FBBrowserArgs;
-import org.opensilk.filebrowser.FBBrowserFragment;
-import org.opensilk.filebrowser.FBItem;
-import org.opensilk.filebrowser.IFBSelectionListener;
+import org.opensilk.filebrowser.FileBrowser;
+import org.opensilk.filebrowser.FileBrowserArgs;
+import org.opensilk.filebrowser.FileBrowserFragment;
+import org.opensilk.filebrowser.FileItem;
+import org.opensilk.filebrowser.FileSelectionListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 
-public class MainActivity extends FragmentActivity implements IFBSelectionListener {
+public class MainActivity extends FragmentActivity implements FileSelectionListener {
 
     @InjectView(R.id.edit_text)
     EditText text;
@@ -35,7 +35,7 @@ public class MainActivity extends FragmentActivity implements IFBSelectionListen
 
     @OnClick(R.id.submit)
     protected void launchBrowser() {
-        FBBrowserFragment f = FBBrowserFragment.newInstance(new FBBrowserArgs().setPath(text.getText().toString()));
+        FileBrowserFragment f = FileBrowserFragment.newInstance(new FileBrowserArgs().setPath(text.getText().toString()));
         f.setSelectionListener(this);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content, f, "file_browser")
@@ -48,8 +48,8 @@ public class MainActivity extends FragmentActivity implements IFBSelectionListen
         // i want to handle up navigation better but i cant think of a way yet
         // for now this work ok
         Fragment f = getSupportFragmentManager().findFragmentByTag("file_browser");
-        if (f != null && f.isResumed() && (f instanceof FBBrowser)) {
-            FBBrowser b = (FBBrowser) f;
+        if (f != null && f.isResumed() && (f instanceof FileBrowser)) {
+            FileBrowser b = (FileBrowser) f;
             if (b.popDirStack()) {
                 return;
             }
@@ -62,8 +62,8 @@ public class MainActivity extends FragmentActivity implements IFBSelectionListen
      */
 
     @Override
-    public void onFBItemsSelected(List<FBItem> l) {
-        ArrayList<FBItem> al = new ArrayList<>(l);
+    public void onFBItemsSelected(List<FileItem> l) {
+        ArrayList<FileItem> al = new ArrayList<>(l);
         SelectedListFragment f = SelectedListFragment.newInstance(al);
         getSupportFragmentManager().popBackStackImmediate();
         getSupportFragmentManager().beginTransaction()

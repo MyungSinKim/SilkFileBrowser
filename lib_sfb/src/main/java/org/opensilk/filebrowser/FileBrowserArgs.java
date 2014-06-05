@@ -23,19 +23,19 @@ import android.os.Parcelable;
 /**
  * Created by drew on 6/4/14.
  */
-public class FBBrowserArgs implements Parcelable {
+public class FileBrowserArgs implements Parcelable {
 
     private String path;
 
-    public FBBrowserArgs() {
+    public FileBrowserArgs() {
     }
 
-    public static FBBrowserArgs copy(FBBrowserArgs old) {
-        return new FBBrowserArgs()
+    public static FileBrowserArgs copy(FileBrowserArgs old) {
+        return new FileBrowserArgs()
                 .setPath(old.getPath());
     }
 
-    public FBBrowserArgs setPath(String path) {
+    public FileBrowserArgs setPath(String path) {
         this.path = path;
         return this;
     }
@@ -58,19 +58,19 @@ public class FBBrowserArgs implements Parcelable {
         dest.writeString(path);
     }
 
-    private FBBrowserArgs(Parcel in) {
+    private FileBrowserArgs(Parcel in) {
         path = in.readString();
     }
 
-    public static final Creator<FBBrowserArgs> CREATOR = new Creator<FBBrowserArgs>() {
+    public static final Creator<FileBrowserArgs> CREATOR = new Creator<FileBrowserArgs>() {
         @Override
-        public FBBrowserArgs createFromParcel(Parcel source) {
-            return new FBBrowserArgs(source);
+        public FileBrowserArgs createFromParcel(Parcel source) {
+            return new FileBrowserArgs(source);
         }
 
         @Override
-        public FBBrowserArgs[] newArray(int size) {
-            return new FBBrowserArgs[size];
+        public FileBrowserArgs[] newArray(int size) {
+            return new FileBrowserArgs[size];
         }
     };
 

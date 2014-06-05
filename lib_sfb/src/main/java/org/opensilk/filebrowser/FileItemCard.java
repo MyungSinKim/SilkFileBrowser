@@ -22,7 +22,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
@@ -37,19 +36,19 @@ import it.gmariotti.cardslib.library.internal.Card;
 /**
  * Created by drew on 6/4/14.
  */
-public class FBItemCard extends Card {
+public class FileItemCard extends Card {
 
-    private final FBItem file;
+    private final FileItem file;
     private boolean selected;
 
-    private FBItemIcon displayIcon;
+    private FileItemIcon displayIcon;
     private ImageView checkedIcon;
 
-    public FBItemCard(Context context, FBItem f) {
+    public FileItemCard(Context context, FileItem f) {
         this(context, f, R.layout.fb__card_list_item_inner);
     }
 
-    public FBItemCard(Context context, FBItem f, int innerLayout) {
+    public FileItemCard(Context context, FileItem f, int innerLayout) {
         super(context, innerLayout);
         file = f;
         selected = false;
@@ -85,7 +84,7 @@ public class FBItemCard extends Card {
         TextView info = ButterKnife.findById(view, R.id.fb__item_info);
         if (info != null) {
             if (file.getSize() >= 0) {
-                info.setText(FBItemUtil.prettyPrintSize(getContext(), file.getSize(), file.getMediaType()));
+                info.setText(FileItemUtil.prettyPrintSize(getContext(), file.getSize(), file.getMediaType()));
             } else {
                 info.setVisibility(View.INVISIBLE);
             }
@@ -93,14 +92,14 @@ public class FBItemCard extends Card {
         TextView date = ButterKnife.findById(view, R.id.fb__item_date);
         if (date != null) {
             if (file.getDate() > 0) {
-                date.setText(FBItemUtil.prettyPrintDate(getContext(), file.getDate()));
+                date.setText(FileItemUtil.prettyPrintDate(getContext(), file.getDate()));
             } else {
                 date.setVisibility(View.INVISIBLE);
             }
         }
     }
 
-    public FBItem getFile() {
+    public FileItem getFile() {
         return file;
     }
 

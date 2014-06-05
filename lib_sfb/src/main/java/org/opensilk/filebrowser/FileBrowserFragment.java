@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,16 +32,16 @@ import it.gmariotti.cardslib.library.view.CardListView;
  *
  * Created by drew on 4/30/14.
  */
-public class FBBrowserFragment extends Fragment implements FBBrowser, LoaderManager.LoaderCallbacks<List<FBItem>> {
+public class FileBrowserFragment extends Fragment implements FileBrowser, LoaderManager.LoaderCallbacks<List<FileItem>> {
 
     protected static final String SDCARD_ROOT;
     static {
         SDCARD_ROOT = Environment.getExternalStorageDirectory().getAbsolutePath();
     }
 
-    protected FBBrowserArgs mArgs;
+    protected FileBrowserArgs mArgs;
     protected TextView mBreadcrumb;
-    protected IFBSelectionListener mCallback;
+    protected FileSelectionListener mCallback;
     protected ActionMode mActionMode;
 
     @InjectView(android.R.id.list)
@@ -53,7 +52,7 @@ public class FBBrowserFragment extends Fragment implements FBBrowser, LoaderMana
     protected CardArrayAdapter mAdapter;
     protected String mBreadCrumbPath;
 
-    protected List<FBItem> mSelection = new ArrayList<>();
+    protected List<FileItem> mSelection = new ArrayList<>();
     protected Deque<Holder> mDirStack = new ArrayDeque<>();
     protected List<Card> mCurrentCards = new ArrayList<>();
 
@@ -62,8 +61,8 @@ public class FBBrowserFragment extends Fragment implements FBBrowser, LoaderMana
      * @param args
      * @return
      */
-    public static FBBrowserFragment newInstance(FBBrowserArgs args) {
-        FBBrowserFragment f = new FBBrowserFragment();
+    public static FileBrowserFragment newInstance(FileBrowserArgs args) {
+        FileBrowserFragment f = new FileBrowserFragment();
         Bundle b = new Bundle(1);
         b.putParcelable("fb__args", args);
         f.setArguments(b);
@@ -104,7 +103,7 @@ public class FBBrowserFragment extends Fragment implements FBBrowser, LoaderMana
         ButterKnife.reset(this);
     }
 
-    public void setSelectionListener(IFBSelectionListener l) {
+    public void setSelectionListener(FileSelectionListener l) {
         mCallback = l;
     }
 
@@ -121,22 +120,22 @@ public class FBBrowserFragment extends Fragment implements FBBrowser, LoaderMana
     protected Card.OnCardClickListener getCardOnClickListener(int mediaType) {
         Card.OnCardClickListener l;
         switch (mediaType) {
-            case FBItem.MediaType.UP_DIRECTORY:
+            case FileItem.MediaType.UP_DIRECTORY:
                 l = new Card.OnCardClickListener() {
                     @Override
                     public void onClick(Card card, View view) {
                         if (!popDirStack()) {
-                            FBItem item = ((FBItemCard) card).getFile();
+                            FileItem item = ((FileItemCard) card).getFile();
                             pushDirStack(item);
                         }
                     }
                 };
                 break;
-            case FBItem.MediaType.DIRECTORY:
+            case FileItem.MediaType.DIRECTORY:
                 l = new Card.OnCardClickListener() {
                     @Override
                     public void onClick(Card card, View view) {
-                        FBItem item = ((FBItemCard) card).getFile();
+                        FileItem item = ((FileItemCard) card).getFile();
                         pushDirStack(item);
                     }
                 };
@@ -145,8 +144,8 @@ public class FBBrowserFragment extends Fragment implements FBBrowser, LoaderMana
                 l = new Card.OnCardClickListener() {
                     @Override
                     public void onClick(Card card, View view) {
-                        FBItemCard c = (FBItemCard) card;
-                        FBItem item = c.getFile();
+                        FileItemCard c = (FileItemCard) card;
+                        FileItem item = c.getFile();
                         if (!mSelection.contains(item)) {
                             mSelection.add(item);
                             c.setSelected(true);
@@ -172,13 +171,13 @@ public class FBBrowserFragment extends Fragment implements FBBrowser, LoaderMana
         return l;
     }
 
-    protected void pushDirStack(FBItem item) {
+    protected void pushDirStack(FileItem item) {
         Bundle b = new Bundle(1);
-        b.putParcelable("fb__args", FBBrowserArgs.copy(mArgs).setPath(item.getPath()));
+        b.putParcelable("fb__args", FileBrowserArgs.copy(mArgs).setPath(item.getPath()));
         mDirStack.push(new Holder(mBreadCrumbPath, mCurrentCards));
         mBreadCrumbPath = item.getPath();
         setBreadCrumbText();
-        getLoaderManager().restartLoader(0, b, FBBrowserFragment.this);
+        getLoaderManager().restartLoader(0, b, FileBrowserFragment.this);
     }
 
     /*
@@ -207,17 +206,17 @@ public class FBBrowserFragment extends Fragment implements FBBrowser, LoaderMana
      */
 
     @Override
-    public Loader<List<FBItem>> onCreateLoader(int id, Bundle args) {
-        FBBrowserArgs _args = args.getParcelable("fb__args");
-        return new FBItemArrayLoader(getActivity(), _args);
+    public Loader<List<FileItem>> onCreateLoader(int id, Bundle args) {
+        FileBrowserArgs _args = args.getParcelable("fb__args");
+        return new FileItemArrayLoader(getActivity(), _args);
     }
 
     @Override
-    public void onLoadFinished(Loader<List<FBItem>> loader, List<FBItem> data) {
+    public void onLoadFinished(Loader<List<FileItem>> loader, List<FileItem> data) {
         mCurrentCards.clear();
         if (data != null && data.size() > 0) {
-            for (FBItem i : data) {
-                FBItemCard c = new FBItemCard(getActivity(), i);
+            for (FileItem i : data) {
+                FileItemCard c = new FileItemCard(getActivity(), i);
                 c.setOnClickListener(getCardOnClickListener(c.getFile().getMediaType()));
                 if (mSelection.contains(i)) {
                     c.setSelected(true);
@@ -231,7 +230,7 @@ public class FBBrowserFragment extends Fragment implements FBBrowser, LoaderMana
     }
 
     @Override
-    public void onLoaderReset(Loader<List<FBItem>> loader) {
+    public void onLoaderReset(Loader<List<FileItem>> loader) {
         mAdapter.clear();
         mAdapter.notifyDataSetChanged();
     }
@@ -254,7 +253,9 @@ public class FBBrowserFragment extends Fragment implements FBBrowser, LoaderMana
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             int id = item.getItemId();
             if (id == R.id.fb__action_done) {
-                mCallback.onFBItemsSelected(mSelection);
+                if (mCallback != null) {
+                    mCallback.onFileItemsSelected(mSelection);
+                }
                 mode.finish();
                 return true;
             }
