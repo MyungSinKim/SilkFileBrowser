@@ -62,7 +62,7 @@ public class MainActivity extends FragmentActivity implements FileSelectionListe
      */
 
     @Override
-    public void onFBItemsSelected(List<FileItem> l) {
+    public void onFileItemsSelected(List<FileItem> l) {
         ArrayList<FileItem> al = new ArrayList<>(l);
         SelectedListFragment f = SelectedListFragment.newInstance(al);
         getSupportFragmentManager().popBackStackImmediate();
