@@ -24,7 +24,6 @@
     android:layout_height="match_parent">
 
     <FrameLayout
-        android:layout_gravity="left|center_vertical"
         android:layout_width="@dimen/card_base_empty_height"
         android:layout_height="@dimen/card_base_empty_height">
 
@@ -48,7 +47,6 @@
 
     <LinearLayout
         android:orientation="vertical"
-        android:gravity="center_vertical"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_marginLeft="@dimen/fb__card_inner_horizontal_margin"
