@@ -1,5 +1,6 @@
 package org.opensilk.filebrowser;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
@@ -49,12 +50,11 @@ public class FileBrowserFragment extends Fragment implements FileBrowser, Loader
     @InjectView(android.R.id.empty)
     protected View mListEmptyView;
 
-    protected CardArrayAdapter mAdapter;
+    protected FileCardAdapter mAdapter;
     protected String mBreadCrumbPath;
 
     protected List<FileItem> mSelection = new ArrayList<>();
     protected Deque<Holder> mDirStack = new ArrayDeque<>();
-    protected List<Card> mCurrentCards = new ArrayList<>();
 
     /**
      * Creates new instance
@@ -73,7 +73,7 @@ public class FileBrowserFragment extends Fragment implements FileBrowser, Loader
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mArgs = getArguments().getParcelable("fb__args");
-        mAdapter = new CardArrayAdapter(getActivity(), new ArrayList<Card>());
+        mAdapter = new FileCardAdapter(getActivity(), new ArrayList<Card>());
         getLoaderManager().initLoader(0, getArguments(), this);
     }
 
@@ -174,7 +174,7 @@ public class FileBrowserFragment extends Fragment implements FileBrowser, Loader
     protected void pushDirStack(FileItem item) {
         Bundle b = new Bundle(1);
         b.putParcelable("fb__args", FileBrowserArgs.copy(mArgs).setPath(item.getPath()));
-        mDirStack.push(new Holder(mBreadCrumbPath, mCurrentCards));
+        mDirStack.push(new Holder(mBreadCrumbPath, mAdapter.getCards()));
         mBreadCrumbPath = item.getPath();
         setBreadCrumbText();
         getLoaderManager().restartLoader(0, b, FileBrowserFragment.this);
@@ -190,10 +190,8 @@ public class FileBrowserFragment extends Fragment implements FileBrowser, Loader
             Holder h = mDirStack.poll();
             mBreadCrumbPath = h.path;
             setBreadCrumbText();
-            mCurrentCards.clear();
-            mCurrentCards.addAll(h.list);
             mAdapter.clear();
-            mAdapter.addAll(mCurrentCards);
+            mAdapter.addAll(h.list);
             return true;
         }
         return false;
@@ -212,7 +210,8 @@ public class FileBrowserFragment extends Fragment implements FileBrowser, Loader
 
     @Override
     public void onLoadFinished(Loader<List<FileItem>> loader, List<FileItem> data) {
-        mCurrentCards.clear();
+        final List<Card> cards = new ArrayList<>();
+        mAdapter.clear();
         if (data != null && data.size() > 0) {
             for (FileItem i : data) {
                 FileItemCard c = new FileItemCard(getActivity(), i);
@@ -220,11 +219,10 @@ public class FileBrowserFragment extends Fragment implements FileBrowser, Loader
                 if (mSelection.contains(i)) {
                     c.setSelected(true);
                 }
-                mCurrentCards.add(c);
+                cards.add(c);
             }
         }
-        mAdapter.clear();
-        mAdapter.addAll(mCurrentCards);
+        mAdapter.addAll(cards);
     }
 
     @Override
@@ -273,6 +271,15 @@ public class FileBrowserFragment extends Fragment implements FileBrowser, Loader
             this.path = path;
             this.list = new ArrayList<>(list);
         }
+    }
+
+    private static final class FileCardAdapter extends CardArrayAdapter {
+        private final List<Card> cards;
+        public FileCardAdapter(Context context, List<Card> cards) {
+            super(context, cards);
+            this.cards = cards;
+        }
+        public List<Card> getCards() { return cards; }
     }
 
 }
