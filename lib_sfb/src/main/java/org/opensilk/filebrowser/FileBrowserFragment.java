@@ -194,7 +194,6 @@ public class FileBrowserFragment extends Fragment implements FileBrowser, Loader
             mCurrentCards.addAll(h.list);
             mAdapter.clear();
             mAdapter.addAll(mCurrentCards);
-            mAdapter.notifyDataSetChanged();
             return true;
         }
         return false;
@@ -226,13 +225,11 @@ public class FileBrowserFragment extends Fragment implements FileBrowser, Loader
         }
         mAdapter.clear();
         mAdapter.addAll(mCurrentCards);
-        mAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onLoaderReset(Loader<List<FileItem>> loader) {
         mAdapter.clear();
-        mAdapter.notifyDataSetChanged();
     }
 
     protected final ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
