@@ -61,16 +61,20 @@ public class FileItemCard extends Card {
             displayIcon.forType(file.getMediaType(), file.getMimeType());
             if (selected) {
                 displayIcon.setVisibility(View.GONE);
+                displayIcon.setRotationX(90f);
             } else {
                 displayIcon.setVisibility(View.VISIBLE);
+                displayIcon.setRotationX(0f);
             }
         }
         checkedIcon = ButterKnife.findById(view, R.id.fb__item_checked);
         if (checkedIcon != null) {
             if (selected) {
                 checkedIcon.setVisibility(View.VISIBLE);
+                checkedIcon.setRotationX(0f);
             } else {
                 checkedIcon.setVisibility(View.GONE);
+                checkedIcon.setRotationX(-90f);
             }
         }
         TextView title = ButterKnife.findById(view, R.id.fb__item_title);
@@ -130,7 +134,7 @@ public class FileItemCard extends Card {
             visibleLayout = checkedIcon;
             invisibleLayout = displayIcon;
         }
-        ObjectAnimator visToInvis = ObjectAnimator.ofFloat(visibleLayout, "rotationX", 0f, 90f);
+        final ObjectAnimator visToInvis = ObjectAnimator.ofFloat(visibleLayout, "rotationX", 0f, 90f);
         visToInvis.setDuration(TRANSITION_DURATION);
         visToInvis.setInterpolator(accelerator);
         final ObjectAnimator invisToVis = ObjectAnimator.ofFloat(invisibleLayout, "rotationX",
