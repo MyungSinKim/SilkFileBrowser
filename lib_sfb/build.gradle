@@ -1,4 +1,4 @@
-apply plugin: 'android-library'
+apply plugin: 'com.android.library'
 apply plugin: 'hugo'
 
 android {
@@ -6,7 +6,7 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        packageName "org.opensilk.filebrowser"
+        applicationId "org.opensilk.filebrowser"
         minSdkVersion 14
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 10000

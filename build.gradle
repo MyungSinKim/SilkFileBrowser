@@ -5,8 +5,8 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.9.+'
-        classpath 'com.jakewharton.hugo:hugo-plugin:1.0.1'
+        classpath 'com.android.tools.build:gradle:0.12.+'
+        classpath 'com.jakewharton.hugo:hugo-plugin:1.1.0'
     }
 }
 
@@ -18,7 +18,7 @@ allprojects {
 
 // Build config
 ext.compileSdkVersion = 19
-ext.buildToolsVersion  = "19.0.3"
+ext.buildToolsVersion  = "19.1.0"
 
 // defaultConfig
 ext.targetSdkVersion = 19
