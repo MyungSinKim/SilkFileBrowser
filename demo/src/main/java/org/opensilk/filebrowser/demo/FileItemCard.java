@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.opensilk.filebrowser;
+package org.opensilk.filebrowser.demo;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -29,6 +29,9 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import org.opensilk.filebrowser.FileItem;
+import org.opensilk.filebrowser.FileItemUtil;
 
 import butterknife.ButterKnife;
 import it.gmariotti.cardslib.library.internal.Card;

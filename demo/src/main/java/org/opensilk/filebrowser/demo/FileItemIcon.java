@@ -1,8 +1,10 @@
-package org.opensilk.filebrowser;
+package org.opensilk.filebrowser.demo;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
+
+import org.opensilk.filebrowser.FileItem;
 
 /**
  * Created by drew on 4/30/14.

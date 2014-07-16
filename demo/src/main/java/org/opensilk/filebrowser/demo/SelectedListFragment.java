@@ -5,7 +5,6 @@ import android.support.v4.app.ListFragment;
 import android.widget.ArrayAdapter;
 
 import org.opensilk.filebrowser.FileItem;
-import org.opensilk.filebrowser.FileItem;
 
 import java.util.ArrayList;
 

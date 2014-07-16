@@ -20,19 +20,24 @@ package org.opensilk.filebrowser;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by drew on 6/4/14.
  */
 public class FileBrowserArgs implements Parcelable {
 
     private String path;
+    private Set<Integer> mediaTypes;
 
     public FileBrowserArgs() {
     }
 
     public static FileBrowserArgs copy(FileBrowserArgs old) {
         return new FileBrowserArgs()
-                .setPath(old.getPath());
+                .setPath(old.getPath())
+                .setMediaTypes(old.getMediaTypes());
     }
 
     public FileBrowserArgs setPath(String path) {
@@ -40,8 +45,17 @@ public class FileBrowserArgs implements Parcelable {
         return this;
     }
 
+    public FileBrowserArgs setMediaTypes(Set<Integer> mediaTypes) {
+        this.mediaTypes = mediaTypes;
+        return this;
+    }
+
     public String getPath() {
         return path;
+    }
+
+    public Set<Integer> getMediaTypes() {
+        return mediaTypes;
     }
 
     /*
@@ -56,10 +70,21 @@ public class FileBrowserArgs implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(path);
+        Integer[] types = mediaTypes.toArray(new Integer[mediaTypes.size()]);
+        int[] types2 = new int[types.length];
+        for (int ii=0; ii<types.length; ii++) {
+            types2[ii] = types[ii];
+        }
+        dest.writeIntArray(types2);
     }
 
     private FileBrowserArgs(Parcel in) {
-        path = in.readString();
+        this.path = in.readString();
+        int[] types = in.createIntArray();
+        this.mediaTypes = new HashSet<>(types.length);
+        for (int t : types) {
+            this.mediaTypes.add(t);
+        }
     }
 
     public static final Creator<FileBrowserArgs> CREATOR = new Creator<FileBrowserArgs>() {

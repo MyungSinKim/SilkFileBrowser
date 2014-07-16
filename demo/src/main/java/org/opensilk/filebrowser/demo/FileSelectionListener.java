@@ -15,11 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.opensilk.filebrowser;
+package org.opensilk.filebrowser.demo;
+
+import org.opensilk.filebrowser.FileItem;
+
+import java.util.List;
 
 /**
  * Created by drew on 6/4/14.
  */
-public interface FileBrowser {
-    public boolean popDirStack();
+public interface FileSelectionListener {
+    public void onFileItemsSelected(List<FileItem> l);
 }

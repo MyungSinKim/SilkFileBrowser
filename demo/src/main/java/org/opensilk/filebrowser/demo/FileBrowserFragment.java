@@ -1,4 +1,4 @@
-package org.opensilk.filebrowser;
+package org.opensilk.filebrowser.demo;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -15,6 +15,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import org.opensilk.filebrowser.FileBrowserArgs;
+import org.opensilk.filebrowser.FileItem;
+import org.opensilk.filebrowser.FileItemArrayLoader;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;

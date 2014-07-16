@@ -6,11 +6,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.widget.EditText;
 
-import org.opensilk.filebrowser.FileBrowser;
 import org.opensilk.filebrowser.FileBrowserArgs;
-import org.opensilk.filebrowser.FileBrowserFragment;
 import org.opensilk.filebrowser.FileItem;
-import org.opensilk.filebrowser.FileSelectionListener;
 
 import java.util.ArrayList;
 import java.util.List;

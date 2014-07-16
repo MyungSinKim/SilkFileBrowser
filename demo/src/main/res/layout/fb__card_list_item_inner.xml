@@ -27,7 +27,7 @@
         android:layout_width="@dimen/card_base_empty_height"
         android:layout_height="@dimen/card_base_empty_height">
 
-        <org.opensilk.filebrowser.FileItemIcon
+        <org.opensilk.filebrowser.demo.FileItemIcon
             android:gravity="center"
             android:textAppearance="?android:textAppearanceLargeInverse"
             android:id="@+id/fb__item_icon"

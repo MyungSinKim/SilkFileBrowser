@@ -8,19 +8,22 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import hugo.weaving.DebugLog;
+//import hugo.weaving.DebugLog;
 
 /**
  * Created by drew on 5/1/14.
@@ -43,7 +46,7 @@ public class MediaProviderUtil {
         };
     }
 
-    @DebugLog
+    //@DebugLog
     public static FileItem fileItemFromCursor(Cursor c) {
         final String displayName = c.getString(c.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DISPLAY_NAME));
         final String title = c.getString(c.getColumnIndexOrThrow(MediaStore.Files.FileColumns.TITLE));
@@ -129,7 +132,41 @@ public class MediaProviderUtil {
         return path;
     }
 
-    public static List<FileItem> ls(Context context, String directory) {
+    public static long[] getChildFiles(Context context, long parentId, int... mediaTypes) {
+        StringBuilder projection = new StringBuilder();
+        projection.append(MediaStore.Files.FileColumns.PARENT).append("=?");
+        if (mediaTypes!= null && mediaTypes.length > 0) {
+            projection.append(" AND (");
+            for(int ii=0; ii<mediaTypes.length; ii++) {
+                projection.append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=").append(mediaTypes[ii]);
+                if (ii<mediaTypes.length-1) {
+                    projection.append(" OR ");
+                }
+            }
+            projection.append(")");
+        }
+        Log.d("TAG", "projection=" + projection.toString());
+        Cursor c = context.getContentResolver()
+                .query(MediaStore.Files.getContentUri("external"),
+                        new String[]{ MediaStore.Files.FileColumns._ID },
+                        projection.toString(),
+                        new String[]{String.valueOf(parentId)},
+                        MediaStore.Files.FileColumns.DATA);
+        if (c != null) {
+            long[] ids = new long[c.getCount()];
+            if (c.moveToFirst()) {
+                int ii=0;
+                do {
+                    ids[ii++] = c.getLong(0);
+                } while (c.moveToNext());
+            }
+            c.close();
+            return ids;
+        }
+        return new long[0];
+    }
+
+    public static List<FileItem> ls(Context context, String directory, Set<Integer> mediaTypes) {
         long id = getDirectoryId(context, directory);
         if (id < 0) {
             return null;
@@ -154,7 +191,7 @@ public class MediaProviderUtil {
             if (c.moveToFirst()) {
                 do {
                     FileItem i = MediaProviderUtil.fileItemFromCursor(c);
-                    if (i != null) {
+                    if (i != null && in(i.getMediaType(), mediaTypes)) {
                         items.add(i);
                     }
                 } while (c.moveToNext());
@@ -163,6 +200,18 @@ public class MediaProviderUtil {
             return items;
         }
         return null;
+    }
+
+    static boolean in(int type, Collection<Integer> types) {
+        if (types == null || types.size() == 0) {
+            return true;
+        }
+        for (int t : types) {
+            if (type == t) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static MediaScannerFuture addFile(Context context, String path) {
