@@ -23,8 +23,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-//import hugo.weaving.DebugLog;
-
 /**
  * Created by drew on 5/1/14.
  */
@@ -46,7 +44,6 @@ public class MediaProviderUtil {
         };
     }
 
-    //@DebugLog
     public static FileItem fileItemFromCursor(Cursor c) {
         final String displayName = c.getString(c.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DISPLAY_NAME));
         final String title = c.getString(c.getColumnIndexOrThrow(MediaStore.Files.FileColumns.TITLE));
