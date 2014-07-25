@@ -193,8 +193,13 @@ public class FileItemUtil {
         long sz;
         if (mediaType == MediaType.DIRECTORY || mediaType == MediaType.NONE) {
             File f = new File(path);
-            if (f.isDirectory()) {
-                sz = f.listFiles().length;
+            if (f.isDirectory() && f.canRead()) {
+                File[] files = f.listFiles();
+                if (files != null) {
+                    sz = files.length;
+                } else {
+                    sz = 0;
+                }
             } else { //file
                 sz = size;
             }

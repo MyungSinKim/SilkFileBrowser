@@ -8,8 +8,8 @@ android {
         applicationId "org.opensilk.filebrowser"
         minSdkVersion 14
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 10000
-        versionName "0.1.0-SNAPSHOT"
+        versionCode 10100
+        versionName "0.1.1-SNAPSHOT"
     }
 
     compileOptions {
